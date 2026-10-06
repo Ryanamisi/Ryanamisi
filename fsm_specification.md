@@ -202,3 +202,17 @@ These are planned checks for the later implementation, not executed tests.
 | Active player's connection fails | Remaining player wins by forfeit |
 | GAME_OVER cannot be delivered | Cleanup still completes |
 | Match finishes | Close clients, reset match, and wait for new players |
+
+## 9. Clarifications from the Protocol Review
+
+The match enters ACTIVE_GAME when the second valid CONNECT is
+accepted, including GAME_START. Departures from that point cause
+a forfeit unless a terminal outcome has already been recorded.
+
+Missing or extra fields produce INVALID_MESSAGE. For MOVE,
+present row and col fields with incorrect types or values produce
+INVALID_COORDINATES. Neither error changes the board or turn.
+
+ERROR uses player_id null before a connection has an assigned
+identity, including GAME_FULL. Otherwise, it uses the connection's
+assigned player identity.

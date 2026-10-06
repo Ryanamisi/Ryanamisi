@@ -183,3 +183,21 @@ timeout.
 After GAME_OVER, the server closes both game connections, clears
 the board and player records, and returns to waiting for players.
 A new game requires new client connections.
+
+## 8. Validation and Startup Clarifications
+
+These rules clarify the earlier sections:
+
+- Missing or extra fields produce INVALID_MESSAGE. For MOVE,
+  when row and col are present, incorrect coordinate types or
+  values produce INVALID_COORDINATES. Booleans are invalid
+  coordinates. Rejected moves preserve the board and turn.
+
+- Server ERROR messages use player_id null when the connection
+  has no assigned player identity, including GAME_FULL.
+  Otherwise, ERROR uses the connection's assigned identity.
+
+- The match becomes active when the second valid CONNECT is
+  accepted, including the GAME_START state. A departure after
+  that causes a forfeit unless a terminal outcome is already
+  recorded. Before that, a departure only frees a waiting slot.

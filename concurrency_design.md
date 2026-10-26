@@ -65,4 +65,31 @@ sequenceDiagram
     Client1->>Server: MOVE
     Server-->>Client1: STATE_UPDATE
     Server-->>Client2: STATE_UPDATE
+Server-->>Client1: SCORE_UPDATE
+Server-->>Client2: SCORE_UPDATE
+Server-->>Client1: GAME_OVER
+Server-->>Client2: GAME_OVER
 ```
+
+## 5. Score and Leaderboard Synchronization
+
+Player scores will be stored in server memory. The server will maintain a
+score for each connected player and update the score when a round ends.
+
+When a round is completed, the server will determine the winner and update
+the appropriate player's score. The score update will occur while the shared
+game state is protected by the threading.Lock.
+
+After the score is updated, the server will send a SCORE_UPDATE message to
+both clients. This ensures that both players receive the same score and
+leaderboard information.
+
+The score update process follows these steps:
+
+1. The server detects that the round has ended.
+2. The server determines the winner.
+3. The server acquires the lock and updates the player's score.
+4. The server releases the lock after the score update is complete.
+5. The server broadcasts SCORE_UPDATE to both clients.
+6. Both clients display the updated scores.
+7. If the entire game is complete, the server broadcasts GAME_OVER to both clients.

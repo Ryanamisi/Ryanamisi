@@ -63,8 +63,14 @@ sequenceDiagram
     Server-->>Client2: GAME_START
 
     Client1->>Server: MOVE
+
+alt Valid Move
     Server-->>Client1: STATE_UPDATE
     Server-->>Client2: STATE_UPDATE
+else Invalid or Out-of-Turn Move
+    Server-->>Client1: ERROR (Invalid Move or Not Your Turn)
+end
+
 Server-->>Client1: SCORE_UPDATE
 Server-->>Client2: SCORE_UPDATE
 Server-->>Client1: GAME_OVER
